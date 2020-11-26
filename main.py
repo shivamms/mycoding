@@ -10,6 +10,6 @@ import arrays.mergeSortedArrays as msa
 #print(rs.reverseStringSimple('subramanian'))
 #print(rs.reverseStringBetter('subramanian'))
 #print(rs.reverseStringSmarter('subramanian'))
-#print(msa.mergeSortedArrays([4,4,4,4,4],[4,4,4,4]))
-print(msa.mergeSortedArraysSmarter([4,4,4,4,4],[4,4,4,4]))
+print(msa.mergeSortedArrays([0,4,6,8,31],[3,7,8,33,40,44]))
+#print(msa.mergeSortedArraysSmarter([4,4,4,4,4],[4,4,4,4]))
 

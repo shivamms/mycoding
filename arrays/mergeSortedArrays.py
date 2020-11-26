@@ -9,17 +9,20 @@ def mergeSortedArrays(arr1, arr2):
   length2 = len(arr2)
   i = 0
   j = 0
-  while i < length1 and j < length2:
-    if arr1[i] <= arr2[j]:
+  while i < length1 or j < length2:
+    if i < length1 and j < length2:
+      if i < length1 and arr1[i] <= arr2[j]:
+        mergedarr.append(arr1[i])
+        i += 1
+      else:
+        mergedarr.append(arr2[j]) 
+        j += 1
+    elif i < length1:
       mergedarr.append(arr1[i])
       i += 1
     else:
-      mergedarr.append(arr2[j]) 
+      mergedarr.append(arr2[j])
       j += 1
-  if i < length1:
-    mergedarr.extend(arr1[i:])
-  else:
-    mergedarr.extend(arr2[j:])
   return(mergedarr)
 
 #using built-in function sorted()
