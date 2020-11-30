@@ -7,7 +7,7 @@
 #keep updating the global maximum if local maximum is greater than global maximum.
 #during any iteration, if global maximum is less than the current number, then update gloabl maximum and local maximum with current number.
 #setting up the global and local maximum to current number make sure we disregard the subarray which reduces the sum overall.
-
+#Greedy algorithm
 def maxSubArray(nums):
   if len(nums) == 1:
     return nums[0]
