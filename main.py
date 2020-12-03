@@ -7,7 +7,8 @@
 #import arrays.moveZeroes as mz
 #import arrays.containsDuplicate as cd
 #import arrays.reverseArray as ra
-import arrays.rotateArray as rta
+#import arrays.rotateArray as rta
+import arrays.longestWord as lw
 
 #print(cl.comparelists([1,'a'], ['f',None,5]))
 #print(hp.haspairsumhash2([5,10,7,4,2,8,0],8))
@@ -42,11 +43,15 @@ import arrays.rotateArray as rta
 #print(ra.reverseArray([1]))
 #print(ra.reverseArray([]))
 
-print(rta.rotateArrayRight([4,10,12,8,9,18,0,2,11,23,7,13], 3))
-print(rta.rotateArrayLeft([4,10,12,8,9,18,0,2,11,23,7,13], 3))
-print(rta.rotateArrayRight([4,10,12,8,9,18,0,2,11,23,7,13], -3))
-print(rta.rotateArrayLeft([4,10,12,8,9,18,0,2,11,23,7,13], -3))
-print(rta.rotateArrayRight([4,10,12,8,9,18,0,2,11,23,7,13], 13))
-print(rta.rotateArrayLeft([4,10,12,8,9,18,0,2,11,23,7,13], 13))
+#print(rta.rotateArrayRight([4,10,12,8,9,18,0,2,11,23,7,13], 3))
+#print(rta.rotateArrayLeft([4,10,12,8,9,18,0,2,11,23,7,13], 3))
+#print(rta.rotateArrayRight([4,10,12,8,9,18,0,2,11,23,7,13], -3))
+#print(rta.rotateArrayLeft([4,10,12,8,9,18,0,2,11,23,7,13], -3))
+#print(rta.rotateArrayRight([4,10,12,8,9,18,0,2,11,23,7,13], 13))
+#print(rta.rotateArrayLeft([4,10,12,8,9,18,0,2,11,23,7,13], 13))
+
+print(lw.LongestWord("fun&!!  time  "))
+print(lw.LongestWord("I love dogs"))
+print(lw.LongestWord("this is some sort of sentence"))
 
 
