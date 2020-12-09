@@ -67,7 +67,7 @@ import linkedlists.implementLinkedList as ill
 #print(htfr.firstRecurring([1,2,2,2,2,2,2,3,3,2,3]))
 #print(htfr.firstRecurring([1,2,3,4,5,6,7,8,9,10,11]))
 #print(htfr.firstRecurring([]))
-"""
+
 # singly linked list test
 mynode = ill.node(14)
 nextnode = ill.node(18)
@@ -123,8 +123,8 @@ node10 = ill.node("oonai")
 mylist.insertByIndex(8,node10)
 mylist.display()
 print(mylist.length)
-"""
 
+"""
 # doubly linked list test
 mynode = ill.node(14)
 nextnode = ill.node(18)
@@ -180,8 +180,11 @@ node10 = ill.node("oonai")
 mylist.insertByIndex(8,node10)
 mylist.display()
 print(mylist.length)
-
-
+"""
+mylist.reverse()
+mylist.display()
+mylist.reverse()
+mylist.display()
 
 
 

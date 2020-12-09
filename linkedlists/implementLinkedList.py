@@ -93,10 +93,25 @@ class linkedlist:
     self.length -= 1
     return
 
+  def reverse(self):
+    if self.length > 1:
+      node = self.head
+      self.tail = node
+      frontnode = node.next
+      node.next = None
+      while frontnode is not None:
+        backnode = node
+        node = frontnode
+        frontnode = node.next
+        node.next = backnode
+      self.head = node
+      
+
   def display(self):
     node = self.head
     llistStr = ""
     for i in range(self.length):
+      #print(node.value)
       if i == 0:
         llistStr = str(node.value)
       else: 
