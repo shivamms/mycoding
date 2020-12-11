@@ -1,3 +1,26 @@
+"""
+import implementQueue as iq
+
+myqueue = iq.queue()
+print(myqueue.pop())
+myqueue.push("avvaiyar")
+print(myqueue.pop())
+print(myqueue.peek())
+myqueue.push("avvaiyar")
+print(myqueue.peek())
+myqueue.push("oonai")
+myqueue.push("otagam")
+myqueue.push("aeni")
+myqueue.push("eli")
+print(myqueue.peek())
+myqueue.push("eee")
+myqueue.push("elai")
+myqueue.push("aadu")
+myqueue.push("amma")
+print(myqueue.peek())
+myqueue.display()
+"""
+
 
 import queues.implementQueueUsingStacks as iqus
 
