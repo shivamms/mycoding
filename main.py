@@ -1,22 +1,23 @@
+import trees.binarySearchTree as bst
+import json
 
-import queues.implementQueueUsingStacks as iqus
+#        10
+#       7   24
+#.    1       102
+tree = bst.btree()
+tree.insert(20)
+tree.insert(24)
+tree.insert(1)
+tree.insert(7)
+tree.insert(18)
+tree.insert(102)
 
-myqueue = iqus.queueWithStack()
-print(myqueue.dequeue())
-myqueue.enqueue("avvaiyar")
-print(myqueue.dequeue())
-#print(myqueue.peek())
-myqueue.enqueue("avvaiyar")
-#print(myqueue.peek())
-myqueue.enqueue("oonai")
-myqueue.enqueue("otagam")
-myqueue.enqueue("aeni")
-myqueue.enqueue("eli")
-#print(myqueue.peek())
-myqueue.display()
-myqueue.enqueue("eee")
-myqueue.enqueue("elai")
-myqueue.enqueue("aadu")
-myqueue.enqueue("amma")
-#print(myqueue.peek())
-myqueue.display()
+print(tree.lookup(6))
+print(tree.remove(102))
+print(tree.lookup(102))
+print(tree.remove(7))
+print(tree.lookup(7))
+print(tree.remove(7))
+#print(json.dumps(str(tree.root)))
+
+#tree.printTree(tree.root)
