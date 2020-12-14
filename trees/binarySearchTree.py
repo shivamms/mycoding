@@ -60,6 +60,7 @@ class btree:
               parentnode.left = currentnode.left
             elif currentnode.value > parentnode.value:
               parentnode.right = currentnode.left
+<<<<<<< HEAD
         elif currentnode.left is None:
 
  
@@ -87,6 +88,39 @@ class btree:
       if rightnode is not None:
         print(str(rightnode.value) + " ")
 """
+=======
+        elif currentnode.right.left is None:
+          currentnode.right.left = currentnode.left
+          if parentnode is None:
+            self.root = currentnode.right
+          else:
+            if currentnode.value < parentnode.value:
+              parentnode.left = currentnode.right
+            elif currentnode.value > parentnode.value:
+              parentnode.right = currentnode.right
+        else:
+          #find the Right child's left most child
+          leftmost = currentnode.right.left;
+          leftmostparent = currentnode.right;
+          while leftmost.left is not None:
+            leftmostparent = leftmost
+            leftmost = leftmost.left
+          #Parent's left subtree is now leftmost's right subtree
+          leftmostparent.left = leftmost.right;
+          leftmost.left = currentnode.left;
+          leftmost.right = currentnode.right;
+
+          if parentnode is None:
+            self.root = leftmost
+          else:
+            if currentnode.value < parentnode.value:
+              parentnode.left = leftmost
+            elif currentnode.value > parentnode.value:
+              parentnode.right = leftmost
+      return True
+
+
+>>>>>>> origin/master
         
 
 
