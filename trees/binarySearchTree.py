@@ -90,7 +90,6 @@ class btree:
               parentnode.right = leftmost
       return True
 
-
         
 
 

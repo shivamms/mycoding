@@ -1,23 +1,23 @@
-import trees.binarySearchTree as bst
-import json
 
-#        10
-#       7   24
-#.    1       102
-tree = bst.btree()
-tree.insert(20)
-tree.insert(24)
-tree.insert(1)
-tree.insert(7)
-tree.insert(18)
-tree.insert(102)
+import graphs.graphAdjacentList as gal
 
-print(tree.lookup(6))
-print(tree.remove(102))
-print(tree.lookup(102))
-print(tree.remove(7))
-print(tree.lookup(7))
-print(tree.remove(7))
-#print(json.dumps(str(tree.root)))
+mygraph = gal.graphAL()
+mygraph.addVertex('0')
+mygraph.addVertex('1')
+mygraph.addVertex('2')
+mygraph.addVertex('3')
+mygraph.addVertex('4')
+mygraph.addVertex('5')
+mygraph.addVertex('6')
 
-#tree.printTree(tree.root)
+mygraph.addEdge('0','1')
+mygraph.addEdge('0','2')
+mygraph.addEdge('1','3')
+mygraph.addEdge('2','1')
+mygraph.addEdge('3','4')
+mygraph.addEdge('4','2')
+mygraph.addEdge('4','5')
+mygraph.addEdge('5','6')
+
+mygraph.showConnections()
+
