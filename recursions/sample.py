@@ -6,4 +6,3 @@ def inception():
   return inception()
 
 inception()
-
