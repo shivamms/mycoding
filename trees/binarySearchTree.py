@@ -60,35 +60,6 @@ class btree:
               parentnode.left = currentnode.left
             elif currentnode.value > parentnode.value:
               parentnode.right = currentnode.left
-<<<<<<< HEAD
-        elif currentnode.left is None:
-
- 
-
-    return False
-
-
-
-
-
-"""
-  def traverseNonRecursion(self,value):
-    node = self.root
-    if node is None:
-      return None
-    else:
-      print(str(node.value) + "/n")
-      leftnode = node.leftnode
-      rightnode = node.rightnode
-    while leftnode is not None or rightnode is not None:
-      if leftnode is not None:
-        print(str(leftnode.value) + " ")
-        leftnode = leftnode.left
-        rightnode = leftnode.right
-      if rightnode is not None:
-        print(str(rightnode.value) + " ")
-"""
-=======
         elif currentnode.right.left is None:
           currentnode.right.left = currentnode.left
           if parentnode is None:
@@ -119,8 +90,6 @@ class btree:
               parentnode.right = leftmost
       return True
 
-
->>>>>>> origin/master
         
 
 
