@@ -1,8 +1,7 @@
-counter = 0
-def inception():
+
+def inception(counter):
   if counter > 3:
     return "done"
   counter += 1
-  return inception()
+  return inception(counter)
 
-inception()

@@ -1,2 +1,2 @@
-language = "undefined"
-run = ""
+language = "python3.8"
+run = "python recursions/main.py"
