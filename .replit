@@ -1,2 +1,2 @@
 language = "python3.8"
-run = "python recursions/main.py"
+run = "python general/main.py"

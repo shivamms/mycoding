@@ -11,7 +11,7 @@ def factorialNonRecursive(num):
 
 def factorialRecursive(num):
   #base case
-  if num == 1:
+  if num == 2:
     #return base case
     return num
   #recursive case and return recursive case 
