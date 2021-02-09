@@ -9,6 +9,7 @@
 #import arrays.reverseArray as ra
 #import arrays.rotateArray as rta
 #import arrays.longestWord as lw
+import palindrome as pl
 
 #print(cl.comparelists([1,'a'], ['f',None,5]))
 #print(hp.haspairsumhash2([5,10,7,4,2,8,0],8))
@@ -53,3 +54,12 @@
 #print(lw.LongestWord("fun&!!  time  "))
 #print(lw.LongestWord("I love dogs"))
 #print(lw.LongestWord("this is some sort of sentence"))
+
+# print(pl.validPalindrome2("abcddecba"))
+# print(pl.validPalindrome2("abcddeecba"))
+# print(pl.validPalindrome2("abcedeecba"))
+# print(pl.validPalindrome2("abcca"))
+# print(pl.validPalindrome2("abc"))
+# print(pl.validPalindrome2("eeccccbebaeeabebccceea"))
+# print(pl.validPalindrome2("aba"))
+print(pl.validPalindrome2("ebcbbececabbacecbbcbe"))
