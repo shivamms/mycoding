@@ -54,3 +54,7 @@ def print_decimals(start,end,interval, places):
     print(round(start,places))
     start += interval
 
+def def is_square(n):  
+    if n >= 0 and (n ** (1/2)).is_integer():
+        return True
+    return False
