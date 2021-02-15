@@ -1,4 +1,4 @@
-# Write your MySQL query statement below
+
 WITH scores AS (
     SELECT first_player AS player_id, SUM(first_score) score
     FROM Matches
