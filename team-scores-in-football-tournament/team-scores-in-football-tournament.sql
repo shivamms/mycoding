@@ -1,22 +1,22 @@
-SELECT * FROM (
-SELECT teams.team_id, teams.team_name, 
-CASE WHEN SUM(combined.num_points) IS NULL THEN 0
-ELSE SUM(combined.num_points) END num_points
-FROM
-(SELECT h.team_id, 
-CASE WHEN m.host_goals > m.guest_goals THEN 3
-     WHEN m.host_goals = m.guest_goals THEN 1
-     ELSE 0 END num_points 
-FROM Teams h, Matches m
-WHERE h.team_id = m.host_team
-UNION ALL
-SELECT g.team_id, 
-CASE WHEN m.guest_goals > m.host_goals THEN 3
-     WHEN m.guest_goals = m.host_goals THEN 1
-     ELSE 0 END num_points 
-FROM Teams g, Matches m
-WHERE g.team_id = m.guest_team) combined
-RIGHT OUTER JOIN Teams teams ON teams.team_id = combined.team_id
-GROUP BY teams.team_id, teams.team_name) result
+WITH points AS (
+    SELECT host_team AS team_id,
+        CASE WHEN host_goals > guest_goals THEN 3
+             WHEN host_goals = guest_goals THEN 1
+             ELSE 0 END num_points 
+    FROM matches
+    UNION ALL
+    SELECT guest_team AS team_id,
+        CASE WHEN host_goals < guest_goals THEN 3
+             WHEN host_goals = guest_goals THEN 1
+             ELSE 0 END num_points 
+    FROM matches),
+total_points AS (
+    SELECT t.team_id, t.team_name, SUM(COALESCE(p.num_points,0)) num_points
+    FROM Teams t
+    LEFT OUTER JOIN points p ON t.team_id = p.team_id
+    GROUP BY t.team_id, t.team_name
+)
+SELECT team_id, team_name, num_points
+FROM total_points
 ORDER BY num_points DESC, team_id ASC
 
