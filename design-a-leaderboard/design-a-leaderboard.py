@@ -8,9 +8,10 @@ class Leaderboard:
             self.players[playerId] += score
         else:
             self.players[playerId] = score
-        self.players = dict(sorted(self.players.items(), key=operator.itemgetter(1),reverse=True))
+        
         
     def top(self, K: int) -> int:
+        self.players = dict(sorted(self.players.items(), key=operator.itemgetter(1),reverse=True))
         sum = 0
         count = 0
         for key, val in self.players.items():
@@ -22,7 +23,7 @@ class Leaderboard:
 
     def reset(self, playerId: int) -> None:
         del self.players[playerId]
-        self.players = dict(sorted(self.players.items(), key=operator.itemgetter(1),reverse=True))
+
 
 
 # Your Leaderboard object will be instantiated and called as such:
