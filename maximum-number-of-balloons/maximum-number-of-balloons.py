@@ -11,4 +11,8 @@ class Solution:
             return min(counts)
         else:
             return 0
-            
+
+# print(maxNumberOfBalloons("loonbaxballpoonnn"))
+# print(maxNumberOfBalloons("loonbalxballpoon"))
+# print(maxNumberOfBalloons(""))
+# print(maxNumberOfBalloons("poonnn"))
