@@ -12,7 +12,17 @@ class Solution:
             if minlength == 1: 
                 return 1  
         return minlength if minlength < numlen + 1 else 0
-            
-            
+
+# target = 7
+# nums = [2,3,1,2,4,3]
+# target = 4
+# nums = [1,4,4]
+# target = 11
+# nums = [1,1,1,1,1,1,1,1]
+# target = 80
+# nums = [10,5,13,4,8,4,5,11,14,9,16,10,20,8]
+# target = 15
+# nums = [1,2,3,4,5]
+# print(minSubArrayLen(target, nums))           
             
             
