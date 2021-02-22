@@ -13,3 +13,9 @@ class Solution:
             intervals = intervals[1:]
         result.append(intervals[0])
         return result
+
+# intervals = [[1,3],[2,6],[8,10],[15,18]]
+# intervals = [[1,4],[4,5]]
+# intervals = [[1,4],[0,1]]
+# intervals = [[1,4],[2,3]]
+# print(merge(intervals))
