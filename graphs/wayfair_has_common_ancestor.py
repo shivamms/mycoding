@@ -58,16 +58,7 @@
 
 # '''
 
-parent_child_pairs_1 = [
-    (1, 3), (2, 3), (3, 6), (5, 6), (5, 7), (4, 5),
-    (4, 8), (4, 9), (9, 11), (14, 4), (13, 12), (12, 9),
-    (15, 13)
-]
 
-parent_child_pairs_2 = [
-    (1, 3), (11, 10), (11, 12), (2, 3), (10, 2), 
-    (10, 5), (3, 4), (5, 6), (5, 7), (7, 8)
-]
 
 from collections import defaultdict
 
@@ -75,12 +66,26 @@ def has_common_ancestor(pc,ind1, ind2):
     adjacenyList = defaultdict(list)
     for p in pc:
         adjacenyList[p[1]].append(p[0])
-    
-    # has_common = False
-    
-    # def dfs(adjacenyList, ind1, ind2):
-    #   if ind1 in adjacenyList.keys():
-    #     for i in adjacenyList[ind1]:
-    #       dfs(adjacenyList, )
     print(adjacenyList)
+    has_common = False
+
+
+    def dfs(alist):
+      if len(alist) <= 0:
+        return
+      for i in range(len(alist)):
+        return dfs(adjacenyList[alist[i]])
+
+    lastVisitedInd1 = None
+    lastVisitedInd2 = None
+    first = dfs(adjacenyList[ind1])
+    second = dfs(adjacenyList[ind2])
+    if first is not None:
+      lastVisitedInd1 = first
+    if second is not None:
+      lastVisitedInd2 = second
+    if lastVisitedInd1 == lastVisitedInd2:
+      has_common == True
+    return(has_common)
+    
 

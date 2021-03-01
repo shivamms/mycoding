@@ -1,5 +1,5 @@
 #import graphs.AdjacentList as gal
-import graphs.has_common_ancestor as hca
+import wayfair_has_common_ancestor as hca
 
 # mygraph = gal.graphAL()
 # mygraph.addVertex('0')
@@ -32,4 +32,4 @@ parent_child_pairs_2 = [
     (10, 5), (3, 4), (5, 6), (5, 7), (7, 8)
 ]
 
-hca.has_common_ancestor(parent_child_pairs_2, 4, 12)
+print(hca.has_common_ancestor(parent_child_pairs_2, 4, 12))

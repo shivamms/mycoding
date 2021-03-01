@@ -10,7 +10,8 @@
 #import arrays.rotateArray as rta
 #import arrays.longestWord as lw
 #import palindrome as pl
-import mergesort as ms
+#import mergesort as ms
+import repeatedDigits as rd
 
 #print(cl.comparelists([1,'a'], ['f',None,5]))
 #print(hp.haspairsumhash2([5,10,7,4,2,8,0],8))
@@ -65,8 +66,10 @@ import mergesort as ms
 # print(pl.validPalindrome2("aba"))
 # print(pl.validPalindrome2("ebcbbececabbacecbbcbe"))
 
-print(ms.mergesort([7,4,6,2,9,1,3,10]))
-print(ms.mergesort([8,2,9,1,3,10]))
-print(ms.mergesort([1,8,2,9,1,3,10,0,3,11,0]))
-print(ms.mergesort([0,8,2,9,0,3,10,1,3,11,1]))
-print(ms.mergesort([0,8,2,9,0,3,10,1,3,1]))
+# print(ms.mergesort([7,4,6,2,9,1,3,10]))
+# print(ms.mergesort([8,2,9,1,3,10]))
+# print(ms.mergesort([1,8,2,9,1,3,10,0,3,11,0]))
+# print(ms.mergesort([0,8,2,9,0,3,10,1,3,11,1]))
+# print(ms.mergesort([0,8,2,9,0,3,10,1,3,1]))
+
+print(rd.repeatedDigits([24, 12, 33, 13, 72, 19, 89,0], 8))
