@@ -1,0 +1,138 @@
+WITH vowels AS (
+SELECT city, LEFT(city, 1) as first, RIGHT(city, 1) as last FROM STATION)
+SELECT city FROM vowels WHERE first in ("a","u","e","o","i") and last in ("a","u","e","o","i")
+GROUP BY city
+
+WITH unique_city AS (
+SELECT city FROM STATION GROUP BY city),
+lastchar AS (
+SELECT city, RIGHT(city,1) AS last FROM unique_city),
+vowels AS (
+SELECT city FROM lastchar WHERE last IN ("a","e","i","o","u"))
+SELECT c.city FROM unique_city c
+LEFT OUTER JOIN vowels v ON c.city = v.city WHERE v.city IS NULL
+
+WITH unique_city AS (
+SELECT city FROM STATION GROUP BY city),
+firstchar AS (
+SELECT city, LEFT(city,1) AS first FROM unique_city),
+lastchar AS (
+SELECT city, RIGHT(city,1) AS last FROM unique_city),
+vowels_in_first AS (
+SELECT city FROM firstchar WHERE first IN ("a","e","i","o","u")),
+vowels_in_last AS (
+SELECT city FROM lastchar WHERE last IN ("a","e","i","o","u"))
+SELECT c.city FROM unique_city c
+LEFT OUTER JOIN vowels_in_first f ON c.city = f.city WHERE f.city IS NULL
+UNION
+SELECT c.city FROM unique_city c
+LEFT OUTER JOIN vowels_in_last l ON c.city = l.city WHERE l.city IS NUL
+
+WITH unique_city AS (
+SELECT city FROM STATION GROUP BY city),
+firstlastchar AS (
+SELECT city, LEFT(city,1) AS first, RIGHT(city,1) AS last FROM unique_city),
+vowels_in_first_last AS (
+SELECT city FROM firstlastchar WHERE first IN ("a","e","i","o","u") OR last IN ("a","e","i","o","u"))
+SELECT c.city FROM unique_city c
+LEFT OUTER JOIN vowels_in_first_last v ON c.city = v.city WHERE v.city IS NULL
+
+WITH above75 AS (
+SELECT id, name FROM students WHERE marks > 75),
+lastthreechar AS (
+SELECT id, name, RIGHT(name, 3) AS lastthree FROM above75),
+ranked AS (
+SELECT id, name, lastthree, RANK() OVER (PARTITION BY lastthree ORDER BY id ASC) idrank FROM lastthreechar)
+SELECT name FROM ranked ORDER BY lastthree ASC, idrank ASC
+
+SELECT CONCAT(name, "(", LEFT(occupation,1), ")") FROM occupations ORDER BY name;
+SELECT CONCAT("There are a total of ", CAST(COUNT(name) AS CHAR), " ", LOWER(occupation), "s.") AS numberofoccu
+FROM occupations GROUP BY occupation ORDER BY COUNT(name) ASC, occupation ASC;
+
+WITH ranking AS (
+SELECT name, occupation, RANK() OVER(PARTITION BY occupation ORDER BY name) AS ranked 
+FROM occupations),
+distinct_rank AS (
+SELECT ranked from ranking GROUP BY ranked)
+SELECT DISTINCT (SELECT MAX(name) FROM ranking WHERE occupation = "Doctor" AND ranked = d.ranked) AS "Doctor",
+(SELECT MAX(name) FROM ranking WHERE occupation = "Professor" AND ranked = d.ranked) AS "Professor",
+(SELECT MAX(name) FROM ranking WHERE occupation = "Singer" AND ranked = d.ranked) AS "Singer",
+(SELECT MAX(name) FROM ranking WHERE occupation = "Actor" AND ranked = d.ranked) AS "Actor"
+FROM ranking r JOIN distinct_rank d ON r.ranked = d.ranked
+
+SELECT  N, 
+        CASE WHEN P IS NULL THEN "Root"
+             WHEN (SELECT MAX(1) FROM BST i WHERE i.P = b.N) = 1 THEN "Inner"
+             ELSE "Leaf" END node_type
+FROM BST b
+ORDER BY N
+
+SELECT c.company_code, c.founder, COUNT(DISTINCT l.lead_manager_code) AS lead_manager, COUNT(DISTINCT s.senior_manager_code) AS senior_manager, COUNT(DISTINCT m.manager_code) AS manager, COUNT(DISTINCT e.employee_code) AS employee
+FROM company c
+LEFT OUTER JOIN Lead_Manager l ON c.company_code = l.company_code
+LEFT OUTER JOIN Senior_Manager s ON c.company_code = s.company_code AND l.lead_manager_code = s.lead_manager_code
+LEFT OUTER JOIN Manager m ON c.company_code = m.company_code AND l.lead_manager_code = m.lead_manager_code AND s.senior_manager_code = m.senior_manager_code
+LEFT OUTER JOIN Employee e ON c.company_code = e.company_code AND l.lead_manager_code = e.lead_manager_code AND s.senior_manager_code = e.senior_manager_code AND m.manager_code = e.manager_code
+GROUP BY c.company_code, c.founder
+ORDER BY c.company_code, c.founder
+
+WITH student_grades AS (
+    SELECT s.name, g.grade, s.marks FROM students s
+    JOIN grades g ON s.marks BETWEEN g.min_mark AND g.max_mark),
+high_grade AS (
+SELECT name, grade, marks FROM student_grades WHERE grade >= 8)
+SELECT h.name, g.grade, g.marks FROM student_grades g
+LEFT OUTER JOIN high_grade h ON g.name = h.name
+ORDER BY g.grade DESC, h.name ASC, g.marks ASC
+
+SELECT hacker_id, name FROM (
+SELECT a.hacker_id, a.name, COUNT(a.challenge_id) full_score_count
+FROM (
+SELECT h.hacker_id, h.name, s.challenge_id, s.score AS sub_score FROM hackers h
+JOIN submissions s ON h.hacker_id = s.hacker_id
+JOIN 
+(SELECT c.challenge_id, d.difficulty_level, d.score
+FROM challenges c JOIN difficulty d ON c.difficulty_level = d.difficulty_level) f
+ON s.challenge_id = f.challenge_id and s.score = f.score) a
+GROUP BY a.hacker_id, a.name) b
+WHERE full_score_count > 1 
+ORDER BY full_score_count DESC, hacker_id ASC
+
+SELECT w.id, m.age, m.coins_needed, m.power
+FROM wands w
+JOIN
+(SELECT wp.code, wp.age, MIN(w.coins_needed) AS coins_needed, w.power
+FROM wands_property wp
+JOIN wands w ON wp.code = w.code
+WHERE wp.is_evil = 0
+GROUP BY wp.code, wp.age, w.power) m
+ON w.power = m.power AND w.coins_needed = m.coins_needed AND w.code = m.code
+ORDER BY m.power DESC, m.age DESC, m.coins_needed ASC
+
+SELECT name FROM
+(SELECT name, ROW_NUMBER() OVER w as rownumber FROM 
+(SELECT name, (price * quantity) AS spent FROM products) s
+JOIN (SELECT  MAX(price * quantity) AS maxspent FROM products) m
+ON s.spent = m.maxspent WINDOW w AS (ORDER BY name ASC)) r
+WHERE rownumber = 1;
+END
+
+SELECT name FROM (
+SELECT name, ROW_NUMBER() OVER (ORDER BY score DESC) AS rownumber,score FROM leaderboard) a WHERE rownumber between 4 AND 8 ORDER BY rownumber;
+
+	/* Write your SQL here. Terminate each statement with a semicolon. */
+    WITH finalgrades AS (
+        SELECT id, name, 
+            (0.25 * midterm1) + (0.25 * midterm2) + (0.50 * final) AS opt1,
+            (0.50 * midterm1) + (0.50 * midterm2) AS opt2,
+            final AS opt3
+        FROM grades
+    ),
+    selection AS (
+    SELECT id, name, 
+            LEFT(name, 3) AS firstthree, 
+            CASE    WHEN GREATEST(opt1,opt2) < opt3 THEN 1 
+                    ELSE 0 END AS isselected
+    FROM finalgrades)
+    SELECT name, id FROM selection WHERE isselected = 1
+    ORDER BY firstthree ASC, id ASC;
