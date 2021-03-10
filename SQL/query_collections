@@ -649,8 +649,7 @@ SELECT CONCAT('Dear ',@firstname, ' ', @lastname, '! We received your message an
     SET @total := 0;
     SET @temp := 0;
     SET @length := 0;
-    SET @i := 0;
-    SET @item := '';    
+    SET @i := 0;  
     total: LOOP
         SET @i = @i + 1;
         SET @item := SUBSTRING_INDEX(SUBSTRING_INDEX(items, ';', @i), ';', -1);
@@ -664,4 +663,70 @@ SELECT CONCAT('Dear ',@firstname, ' ', @lastname, '! We received your message an
     
     RETURN @total;
     ----------------*************************---------------------------------
+    WITH tables AS (
+        SELECT TABLE_NAME,TABLE_SCHEMA FROM INFORMATION_SCHEMA.TABLES
+        WHERE LEFT(TABLE_NAME,1) = 'e' AND RIGHT(TABLE_NAME,1) = 's'
+        AND TABLE_SCHEMA = "ri_db"
+    )
+    SELECT t.TABLE_NAME AS tab_name, c.COLUMN_NAME AS col_name,
+    c.DATA_TYPE AS data_type
+    FROM tables t 
+    JOIN INFORMATION_SCHEMA.COLUMNS c ON t.TABLE_NAME = c.TABLE_NAME
+    AND t.TABLE_SCHEMA = c.TABLE_SCHEMA
+    WHERE t.TABLE_SCHEMA = "ri_db";
+    ----------------**************************--------------------------------
+        WITH genre_counts AS (
+        SELECT genre, COUNT(movie) AS genre_count 
+        FROM movies GROUP BY genre 
+    ), favorite_genre AS (
+    SELECT genre FROM genre_counts 
+    WHERE genre_count = (SELECT MAX(genre_count) FROM genre_counts)
+    ), favorite_movies AS (
+    SELECT DISTINCT movie FROM movies m 
+    JOIN favorite_genre f ON m.genre = f.genre),
+    favorite_actors AS (
+    SELECT DISTINCT actor FROM starring_actors a 
+    JOIN favorite_movies f ON a.movie_name = f.movie)
+    SELECT f.actor, a.age FROM favorite_actors f 
+    JOIN actor_ages a ON f.actor = a.actor
+    ORDER BY a.age DESC, f.actor ASC;
+    --------------************************************************************
+    WITH most_bugs AS (
+        SELECT bug_num, COUNT(component_id)
+        FROM BugComponent
+        GROUP BY bug_num HAVING COUNT(component_id) > 1),
+        buggy_comp AS (
+            SELECT bc.component_id, m.bug_num
+            FROM most_bugs m
+            JOIN BugComponent bc ON m.bug_num = bc.bug_num),
+        final AS (
+        SELECT b.title AS bug_title, c.title AS  component_title,
+        bc.component_id, bc.bug_num
+        FROM buggy_comp bc 
+        JOIN bug b ON bc.bug_num = b.num 
+        JOIN component c ON bc.component_id = c.id),
+        bugs_count AS (
+            SELECT component_id, COUNT(bug_num) AS bugs_in_component
+            FROM bugcomponent GROUP BY component_id
+        )
+        SELECT f.bug_title, f.component_title, bc.bugs_in_component
+        FROM final f 
+        JOIN bugs_count bc ON f.component_id = bc.component_id
+        ORDER BY bc.bugs_in_component DESC, bc.component_id ASC,
+        f.bug_num ASC;
 
+
+        WITH seats AS (
+        SELECT f.flight_id, p.plane_id, p.number_of_seats
+        FROM flights f JOIN planes p ON f.plane_id = p.plane_id
+    ),
+    purchased AS (
+        SELECT flight_id, COUNT(seat_no) AS purchased_seats
+        FROM purchases GROUP BY flight_id
+    )
+    SELECT s.flight_id, 
+    CASE WHEN p.purchased_seats IS NULL THEN s.number_of_seats 
+         ELSE s.number_of_seats - p.purchased_seats END AS free_seats
+    FROM seats s 
+    LEFT OUTER JOIN purchased p ON s.flight_id = p.flight_id
+    ORDER BY s.flight_id ASC;
