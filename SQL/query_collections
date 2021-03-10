@@ -136,3 +136,532 @@ SELECT name, ROW_NUMBER() OVER (ORDER BY score DESC) AS rownumber,score FROM lea
     FROM finalgrades)
     SELECT name, id FROM selection WHERE isselected = 1
     ORDER BY firstthree ASC, id ASC;
+
+
+    WITH temp1 AS (
+    SELECT WEEKDAY(mischief_date) AS weekday, mischief_date, author, title,
+    CASE WHEN author = "Huey" THEN 1
+        WHEN author = "Dewey" THEN 2
+        WHEN author = "Louie" THEN 3
+        END AS author_order 
+    FROM mischief)
+    SELECT weekday, mischief_date, author, title FROM temp1
+    ORDER BY weekday ASC, author_order ASC, mischief_date ASC, title;
+
+SELECT id, name, surname FROM suspect 
+WHERE height <= 170 AND LOWER(LEFT(name,1)) = "b" AND LOWER(surname) LIKE "gre_n" ORDER BY id ASC;
+
+SELECT id, name, surname FROM suspect 
+WHERE height <= 170 OR (height > 170 AND (LOWER(LEFT(name,1)) != "b" OR 
+LOWER(surname) NOT LIKE   "gre_n")) ORDER BY id ASC;
+
+SELECT first_name, second_name, attribute
+FROM users WHERE attribute LIKE BINARY CONCAT("_%\%",first_name,"_",second_name,"\%%")
+ORDER BY attribute ASC;
+
+SELECT id, IF (given_answer IS NULL, "no answer", IF(given_answer = correct_answer,"correct","incorrect")) AS checks
+FROM answers
+ORDER BY id;
+
+WITH verify AS (
+    SELECT id, a, b, operation, c,
+    CASE    WHEN operation = "+" AND a + b = c THEN 1
+            WHEN operation = "-" AND a - b = c THEN 1
+            WHEN operation = "*" AND a * b = c THEN 1
+            WHEN operation = "/" AND a / b = c THEN 1
+            ELSE 0 END AS verification
+    FROM expressions
+)
+SELECT id, a, b, operation, c FROM verify WHERE verification = 1 ORDER BY id;
+
+WITH combined AS (
+SELECT subscriber FROM full_year WHERE newspaper LIKE "%Daily%"
+UNION
+SELECT subscriber FROM half_year WHERE newspaper LIKE "%Daily%")
+SELECT subscriber FROM combined ORDER BY subscriber ASC;
+
+SELECT  COUNT(name) AS number, 
+        AVG(population) AS average,
+        SUM(population) AS total
+FROM countries;
+
+WITH total AS (
+SELECT continent, SUM(users) AS users
+FROM countries GROUP BY continent)
+SELECT continent, users FROM total
+ORDER BY users DESC;
+
+WITH temp AS (
+SELECT director, SUM(oscars) AS total_oscars
+FROM moviesinfo 
+WHERE year > 2000
+GROUP BY director)
+SELECT director FROM temp WHERE total_oscars > 2
+ORDER BY director ASC;
+
+SET @countrylist := "";
+WITH temp AS (
+SELECT @countrylist := CONCAT(@countrylist, country, ';') FROM
+(SELECT DISTINCT country FROM diary ORDER BY country ASC) a)
+SELECT DISTINCT TRIM(TRAILING ';' FROM @countrylist) AS countries FROM temp;
+
+SET @playerlist := "";
+WITH temp AS (
+SELECT @playerlist := CONCAT(@playerlist, first_name, ' ', surname, ' #', CAST(player_number AS CHAR), '; ') FROM soccer_team ORDER BY player_number)
+SELECT  DISTINCT TRIM(TRAILING '; ' FROM @playerlist) AS players FROM temp;
+
+WITH report AS (
+    SELECT country, COUNT(competitor) AS competitors 
+    FROM foreignCompetitors GROUP BY country)
+SELECT country, competitors FROM 
+(SELECT country, competitors, ROW_NUMBER() OVER(ORDER BY country) AS order_by FROM report
+UNION ALL
+SELECT "Total:" AS country, (SELECT SUM(competitors) FROM report) AS competitors,
+(SELECT COUNT(country) FROM report) + 1 AS order_by) a
+ORDER BY order_by;
+
+SELECT COUNT(1) AS number_of_nulls
+FROM departments 
+WHERE LOWER(TRIM(description)) IN ("null","nil","-") OR description IS NULL;
+
+SELECT SUM(CASE type WHEN 1 THEN 2 ELSE 4 END) as summary_legs
+FROM creatures
+
+SET @combinations := 1;
+WITH temp AS (
+SELECT @combinations := @combinations * LENGTH(characters) FROM discs)
+SELECT DISTINCT @combinations AS combinations FROM temp;
+
+SELECT name
+FROM people_interests
+WHERE interests & b'0001' AND interests & b'1000'
+ORDER BY name;
+
+SELECT name FROM people_hobbies 
+WHERE hobbies & b'0001' AND hobbies & b'0010';
+
+WITH authors AS (
+SELECT DISTiNCT ExtractValue(xml_doc,'//book[1]//author[1]') AS author FROM catalogs)
+SELECT DISTINCT author FROM authors 
+ORDER BY author;
+
+WITH temp AS (
+SELECT @poly := GROUP_CONCAT(CAST(x AS CHAR), ' ', CAST(y AS CHAR)) FROM places)
+SELECT ST_Area(ST_ConvexHull(ST_GeomFromText(CONCAT('MULTIPOINT(',@poly,')')))) AS area 
+FROM temp;
+
+SELECT id, email_title, 
+CASE size DIV POWER(2,20) WHEN 0 THEN CONCAT(CAST(size DIV POWER(2,10) AS CHAR),' Kb') 
+                            ELSE CONCAT(CAST(size DIV POWER(2,20) AS CHAR),' Mb') 
+                            END AS short_size 
+FROM emails ORDER BY size DESC;
+
+WITH temp AS (
+    SELECT country,
+            CASE WHEN leisure_activity_type = 'Adventure park' THEN number_of_places
+                ELSE 0 END AS adventure_park,
+            CASE WHEN leisure_activity_type = 'Golf' THEN number_of_places
+                ELSE 0 END AS golf,
+            CASE WHEN leisure_activity_type = 'River cruise' THEN number_of_places
+                ELSE 0 END AS river_cruise,
+            CASE WHEN leisure_activity_type = 'Kart racing' THEN number_of_places
+                ELSE 0 END AS kart_racing
+    FROM countryActivities)
+SELECT country, SUM(adventure_park) AS adventure_park,
+                SUM(golf) AS golf,
+                SUM(river_cruise) AS river_cruise,
+                SUM(kart_racing) AS kart_racing
+FROM temp GROUP BY country ORDER BY country ASC;
+
+WITH win AS (
+    SELECT first_team_score, second_team_score,
+    CASE WHEN first_team_score > second_team_score THEN 1 ELSE 0 END AS first_team_win,
+    CASE WHEN first_team_score < second_team_score THEN 1 ELSE 0 END AS second_team_win,
+    CASE WHEN match_host = 2 THEN first_team_score ELSE 0 END AS first_team_away_game_score,
+    CASE WHEN match_host = 1 THEN second_team_score ELSE 0 END AS second_team_away_game_score
+FROM scores
+),
+totals AS (   
+SELECT SUM(first_team_score) AS total_scores1,
+        SUM(second_team_score) AS total_scores2,
+        SUM(first_team_win) AS total_wins1,
+        SUM(second_team_win) AS total_wins2,
+        SUM(first_team_away_game_score) AS total_away_scores1,
+        SUM(second_team_away_game_score) AS total_away_scores2
+FROM win)
+SELECT CASE WHEN total_wins1 > total_wins2 THEN 1
+            WHEN total_wins1 < total_wins2 THEN 2
+            WHEN total_scores1 > total_scores2 THEN 1
+            WHEN total_scores1 < total_scores2 THEN 2
+            WHEN total_away_scores1 > total_away_scores2 THEN 1
+            WHEN total_away_scores1 < total_away_scores2 THEN 2
+            ELSE 0 END AS winner
+FROM totals;
+
+SELECT id, ip FROM ips WHERE IS_IPV4(ip) 
+AND (ip REGEXP 
+'^[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{2,2}\\.[0-9]{1,3}$' OR 
+ip REGEXP '^[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{2,2}$')
+ORDER BY id;
+
+SELECT name, surname, phone_number
+FROM phone_numbers
+WHERE phone_number REGEXP '^1\\-[0-9]{3,3}\\-[0-9]{3,3}\\-[0-9]{4,4}$' OR 
+phone_number REGEXP '^\\(1\\)[0-9]{3,3}\\-[0-9]{3,3}\\-[0-9]{4,4}$'
+ORDER BY surname;
+
+WITH event_weekday AS (
+SELECT id, name, event_date, participants, WEEKDAY(event_date) weekday
+FROM events)
+SELECT id, name, event_date, participants
+FROM event_weekday ORDER BY weekday ASC, participants DESC;
+
+SELECT STR_TO_DATE(date_str, '%Y-%m-%d') AS date_iso
+FROM documents ORDER BY id;
+
+WITH recentdate AS (
+    SELECT MAX(event_date) AS max_event_date
+    FROM events
+)
+SELECT name, event_date
+FROM events JOIN recentdate ON DATEDIFF(max_event_date,event_date) BETWEEN 1 AND 7
+ORDER BY event_date DESC;
+
+WITH profits AS (
+SELECT YEAR(date) AS year, QUARTER(date) AS quarter, CAST(profit AS SIGNED) - CAST(loss AS SIGNED) AS net_profit
+FROM accounting)
+SELECT year, quarter, SUM(net_profit) as net_profit
+FROM profits
+GROUP BY year, quarter ORDER BY year ASC, quarter ASC;
+
+-------------------------------------------------------
+SET @weeks := (SELECT DATEDIFF(STR_TO_DATE(CONCAT(CAST(YEAR(input_date) AS CHAR),'-12-31 ',CAST(TIME(input_date) AS CHAR)),'%Y-%m-%d %H:%i:%S'), input_date) DIV 7 FROM userinput);
+WITH RECURSIVE dates AS
+(
+SELECT 1 AS n, input_date AS alarm_date FROM userinput
+UNION ALL
+SELECT n + 1, DATE_ADD(alarm_date,
+    INTERVAL 7 DAY) FROM dates WHERE n < @weeks + 1
+)
+SELECT alarm_date FROM dates ORDER BY alarm_date;
+---------------------------------------------------------------------------------
+
+SELECT dep_name, emp_name FROM departments
+JOIN employees ON 1=1 ORDER BY dep_name ASC, emp_name ASC;
+
+SELECT c.candidate_id AS student_id FROM candidates c
+LEFT OUTER JOIN detentions d 
+ON c.candidate_id = d.student_id
+WHERE d.student_id IS NULL
+ORDER BY c.candidate_id ASC;
+
+SELECT u.id, COALESCE(c.country, 'unknown') FROM users u
+LEFT OUTER JOIN cities c ON u.city = c.city
+ORDER BY u.id ASC;
+
+-------------*****************---------------------------
+WITH distances AS (
+SELECT s1.name AS place1, s2.name AS place2, 
+SQRT(POWER(s2.x-s1.x,2) + POWER(s2.y-s1.y,2)) AS distance
+FROM sights s1
+JOIN sights s2 ON 1 = 1
+),
+allcombi AS (
+SELECT place1, place2, distance FROM distances 
+WHERE distance BETWEEN 0 AND 5)
+SELECT DISTINCT place1, place2 FROM allcombi r1
+WHERE NOT EXISTS (
+SELECT 1 FROM allcombi r2
+WHERE r1.place1 = r2.place2
+AND r1.place2 = r2.place1
+AND r1.place1 > r2.place1) 
+ORDER BY place1, place2;
+------------******************-----------------------------
+WITH rownumbered AS (
+SELECT name, ROW_NUMBER() OVER(ORDER BY name) AS rownumber, x, y
+FROM sights),
+distances AS (
+SELECT s1.name AS place1, s2.name AS place2, 
+SQRT(POWER(s2.x-s1.x,2) + POWER(s2.y-s1.y,2)) AS distance
+FROM rownumbered s1
+JOIN rownumbered s2 ON s1.rownumber < s2.rownumber
+)
+SELECT place1, place2 FROM distances 
+WHERE distance BETWEEN 0 AND 5
+ORDER BY place1, place2;
+------------*********************----------------------------
+SELECT event_id,
+CASE    WHEN hours = 24 
+        THEN DATE_FORMAT(DATE_ADD(date, INTERVAL timeshift MINUTE),'%Y-%m-%d %H:%i') 
+        WHEN hours = 12
+        THEN DATE_FORMAT(DATE_ADD(date, INTERVAL timeshift MINUTE),'%Y-%m-%d %h:%i %p') 
+        END AS formatted_date
+FROM events e
+JOIN settings s ON e.user_id = s.user_id
+ORDER BY event_id;
+--------------*********************--------------------------
+SET @totaldistance := 0.0;
+WITH distances AS (
+    SELECT @totaldistance := @totaldistance + 
+    SQRT(POWER(c2.x-c1.x,2) + POWER(c2.y-c1.y,2))
+    FROM cities c1 
+    JOIN cities c2 WHERE c1.id = c2.id + 1
+)
+SELECT DISTINCT FORMAT(@totaldistance, 9) AS total FROM distances;
+---------------**********************------------------------
+    DELETE FROM currencies
+    currencies
+    WHERE LENGTH(code) <> 3;
+
+    SELECT * FROM currencies ORDER BY code;
+
+        ALTER TABLE groupcourses ADD FOREIGN KEY (course_id)
+    REFERENCES courses (id)
+    ON DELETE CASCADE;
+
+    ALTER TABLE groupexams ADD FOREIGN KEY (course_id)
+    REFERENCES courses (id)
+    ON DELETE CASCADE;
+
+    DELETE FROM courses WHERE name LIKE '%-toremove';
+
+
+    SELECT group_id, course_id
+      FROM groupcourses
+     UNION
+    SELECT group_id, course_id
+      FROM groupexams
+     ORDER BY group_id, course_id;
+
+     	UPDATE reservedNicknames
+    SET id = CONCAT('rename - ',id),
+        nickname = CONCAT('rename - ',nickname)
+    WHERE LENGTH(nickname) <> 8;
+
+     CREATE OR REPLACE VIEW emp
+    AS 
+    SELECT id, name, YEAR(date_joined) AS date_joined, 
+    '-' AS salary
+    FROM employees;
+
+        ALTER TABLE branches ADD FOREIGN KEY (branchtype_id)
+    REFERENCES branch_types(id)
+    ON DELETE SET NULL;
+
+    DELETE FROM branch_types WHERE name LIKE '%-outdated';
+
+    ALTER TABLE restaurants ADD COLUMN description VARCHAR(100) DEFAULT "TBD",
+                            ADD COLUMN active INT DEFAULT 1;
+
+    SELECT * FROM students
+    WHERE EXISTS (
+        SELECT 1 FROM clubs WHERE id = students.club_id
+    )
+    ORDER BY students.id;
+
+        SELECT dep_name FROM departments d
+    LEFT OUTER JOIN employees e ON d.id = e.department
+    WHERE e.department IS NULL
+    ORDER BY d.id;
+
+    WITH distances AS (
+        SELECT p1.id AS id1, p2.id AS id2, 
+        SQRT(POWER(p2.x-p1.x,2) + POWER(p2.y-p1.y,2)) AS distance
+        FROM positions p1
+        JOIN positions p2 ON 1 = 1
+    ),
+    ranked AS (
+    SELECT id1,id2, RANK() OvER (PARTITION BY id1 ORDER BY distance ASC) AS distancerank FROM distances WHERE distance > 0)
+    SELECT id1, id2 FROM ranked WHERE distancerank = 1;
+
+        WITH rownumbered AS (
+        SELECT grade, ROW_NUMBER() OVER (ORDER BY grade DESC) AS rownumber
+        FROM students
+    )
+    SELECT FORMAT(AVG(grade),2) FROM rownumbered WHERE rownumber <= 5;
+
+
+        WITH salary_rank AS (
+        SELECT salary, RANK() OVER(ORDER BY salary ASC) AS low_high,
+        RANK() OVER(ORDER BY salary DESC) AS high_low
+        FROM employees
+    )
+    SELECT 
+        COALESCE((SELECT SUM(salary) FROM salary_rank WHERE high_low = 1) - 
+        (SELECT SUM(salary) FROM salary_rank WHERE low_high = 1),0) AS salary_diff;
+
+
+   WITH combine_rank AS (
+        SELECT id, name, date_joined, 'pr' AS department,
+        RANK() OVER(ORDER BY date_joined DESC) AS recent,
+        1 AS dept_rank 
+        FROM pr_department
+        UNION ALL
+        SELECT id, name, date_joined, 'it' AS department,
+        RANK() OVER(ORDER BY date_joined DESC) AS recent,
+        2 AS dept_rank 
+        FROM it_department
+        UNION ALL
+        SELECT id, name, date_joined, 'sales' AS department,
+        RANK() OVER(ORDER BY date_joined DESC) AS recent,
+        3 AS dept_rank 
+        FROM sales_department
+    )
+    SELECT name FROM combine_rank
+    WHERE recent <= 5 ORDER BY dept_rank ASC, name ASC;
+
+        WITH weeknumbers AS (
+        SELECT WEEKOFYEAR(monday_date) as weeknumber, expenditure_sum
+        FROM expenditure_plan
+    ),
+    sums AS (
+    SELECT a.id, a.left_bound, a.right_bound, 
+    value - 
+    SUM(w.expenditure_sum) OVER(PARTITION BY a.left_bound, a.right_bound) AS expsum
+    FROM allowable_expenditure a
+    JOIN weeknumbers w ON weeknumber BETWEEN a.left_bound AND a.right_bound)
+    SELECT DISTINCT id, CASE WHEN expsum < 0 THEN ABS(expsum) ELSE 0 END AS loss
+    FROM sums ORDER BY id;
+
+
+WITH extremes AS (
+    SELECT MAX(first_criterion) max1,
+    MIN(first_criterion) min1,
+    MAX(second_criterion) max2,
+    MIN(second_criterion) min2,
+    MAX(third_criterion) max3,
+    MIN(third_criterion) min3
+FROM scores
+)
+SELECT * FROM scores s1
+WHERE s1.arbiter_id NOT IN
+(SELECT s2.arbiter_id FROM extremes e 
+JOIN scores s2 ON s2.arbiter_id = s1.arbiter_id
+AND (s2.first_criterion IN (e.max1, e.min1) 
+AND s2.second_criterion IN (e.max2, e.min2))
+OR
+(s2.second_criterion IN (e.max2, e.min2) 
+AND s2.third_criterion IN (e.max3, e.min3))
+OR
+(s2.first_criterion IN (e.max1, e.min1) 
+AND s2.third_criterion IN (e.max3, e.min3))
+);
+
+    WITH chrono AS (
+        SELECT event_name, anonymous_id, user_id,
+        RANK() OVER (PARTITION BY anonymous_id ORDER BY received_at) as chrononumber
+        FROM tracks
+    ),
+maxnull AS (
+SELECT anonymous_id, MAX(chrononumber) AS maxnull
+FROM chrono WHERE user_id IS NULL 
+GROUP BY anonymous_id), 
+minnotnull AS (
+SELECT anonymous_id, MIN(chrononumber) AS minnotnull
+FROM chrono WHERE user_id IS NOT NULL 
+GROUP BY anonymous_id),
+final AS (
+SELECT m1.anonymous_id, m1.maxnull, m2.minnotnull
+FROM maxnull m1
+LEFT OUTER JOIN minnotnull m2 ON m1.anonymous_id = m2.anonymous_id),
+maxnullevents AS (
+SELECT f.anonymous_id AS anonym_id, c.event_name AS last_null,
+c.chrononumber 
+FROM final f JOIN chrono c on f.anonymous_id = c.anonymous_id
+AND c.chrononumber = f.maxnull),
+minnotnullevents AS (
+SELECT f.anonymous_id AS anonym_id, c.event_name AS first_notnull,
+c.chrononumber 
+FROM final f JOIN chrono c on f.anonymous_id = c.anonymous_id
+AND c.chrononumber = f.minnotnull)
+SELECT m1.anonym_id, m1.last_null, m2.first_notnull
+FROM maxnullevents m1 LEFT OUTER JOIN minnotnullevents m2 ON m1.anonym_id = m2.anonym_id;
+
+
+    WITH longtable AS (
+        SELECT id, 'name' AS column_name, name AS value, 1 AS col_order
+        FROM workers_info WHERE name IS NOT NULL
+        UNION ALL 
+        SELECT id, 'date_of_birth' AS column_name, date_of_birth AS value, 2 AS col_order
+        FROM workers_info WHERE date_of_birth IS NOT NULL
+        UNION ALL
+        SELECT id, 'salary' AS column_name, salary AS value, 3 AS col_order
+        FROM workers_info WHERE salary IS NOT NULL
+    )
+    SELECT id, column_name, value FROM longtable
+    ORDER BY id ASC, col_order ASC;
+
+    WITH rownumbered AS (
+    SELECT id AS oldid,
+    ROW_NUMBER() OVER (ORDER BY id ASC) AS newid
+    FROM itemids)
+    SELECT oldid, newid FROM rownumbered ORDER BY newid;
+
+        WITH rownumbered AS (
+        SELECT buyer_name, 
+        ROW_NUMBER() OVER(ORDER BY timestamp ASC) rownumber 
+        FROM purchases
+    )
+    SELECT buyer_name AS winners
+    FROM rownumbered
+    WHERE rownumber MOD 4 = 0
+    GROUP BY buyer_name
+    ORDER BY buyer_name;
+
+WITH split AS (
+
+    SELECT id, hostname,
+    SUBSTRING_INDEX(SUBSTRING_INDEX(hostname, '.', 1), '.', -1) AS last,
+    SUBSTRING_INDEX(SUBSTRING_INDEX(hostname, '.', 2), '.', -1) AS middle,
+    SUBSTRING_INDEX(SUBSTRING_INDEX(hostname, '.', 3), '.', -1) AS first
+    FROM hostnames
+),
+joined AS (
+SELECT id, hostname, first, middle, last,
+CASE WHEN first = last THEN first
+      WHEN LENGTH(middle) <= 0 OR first = middle THEN 
+        CONCAT(first,'.',last)
+    ELSE
+        CONCAT(first,'.',middle,'.',last) END AS reversed
+FROM split)
+SELECT id, hostname FROM joined
+ORDER BY reversed;
+
+    WITH order_analytics AS (
+        SELECT id, YEAR(order_date) AS year,
+        QUARTER(order_date) AS quarter,
+        type,
+        quantity * price AS total_price
+        FROM orders
+    )
+
+    SELECT *
+    FROM order_analytics
+    ORDER by id;
+
+SET @firstname := LOWER(SUBSTRING_INDEX(name,' ', 1));
+SET @lastname := LOWER(SUBSTRING_INDEX(name, ' ', -1));
+SET @firstname := CONCAT(UPPER(LEFT(@firstname,1)),RIGHT(@firstname,LENGTH(@firstname)-1));
+SET @lastname := CONCAT(UPPER(LEFT(@lastname,1)),RIGHT(@lastname,LENGTH(@lastname)-1));
+SELECT CONCAT('Dear ',@firstname, ' ', @lastname, '! We received your message and will process it as soon as possible. Thanks for using our service. FooBar On! - FooBarIO team.');
+
+------------------*************************-------------------------------
+    SET @total := 0;
+    SET @temp := 0;
+    SET @length := 0;
+    SET @i := 0;
+    SET @item := '';    
+    total: LOOP
+        SET @i = @i + 1;
+        SET @item := SUBSTRING_INDEX(SUBSTRING_INDEX(items, ';', @i), ';', -1);
+        SELECT price INTO @temp FROM item_prices WHERE id = @item;
+        SET @total := @total + @temp;
+        SET @length := LENGTH(SUBSTRING_INDEX(items, ';', @i));
+        IF @length = LENGTH(items) THEN
+            LEAVE total;
+        END IF;
+    END LOOP;
+    
+    RETURN @total;
+    ----------------*************************---------------------------------
+
