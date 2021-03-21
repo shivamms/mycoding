@@ -730,3 +730,133 @@ SELECT CONCAT('Dear ',@firstname, ' ', @lastname, '! We received your message an
     FROM seats s 
     LEFT OUTER JOIN purchased p ON s.flight_id = p.flight_id
     ORDER BY s.flight_id ASC;
+
+        WITH gift_volumes AS (
+        SELECT id, gift_name, length, width, height,
+        length * width * height AS gift_volume 
+        FROM gifts
+    ),
+    package_volumes AS (
+        SELECT package_type, length, width, height,
+        length * width * height AS package_volume
+        FROM packages
+    ),
+    gift_package AS (
+        SELECT id AS gift_id, gift_name, package_type, gift_volume, 
+        package_volume 
+        FROM gift_volumes g JOIN package_volumes p 
+        ON g.length <= p.length AND g.width <= p.width
+        AND g.height <= p.height AND g.gift_volume <= p.package_volume
+    ),
+    ranked AS (
+        SELECT gift_id, gift_name, package_type, package_volume, gift_volume,
+        RANK() OVER(PARTITION BY gift_id ORDER BY package_volume ASC) AS size_rank
+        FROM gift_package
+    ),
+    smallest_vols AS (
+        SELECT gift_id, MIN(size_rank) AS smallest_vol_rank 
+        FROM ranked
+        GROUP BY gift_id
+    )
+    SELECT r.package_type, COUNT(r.gift_id) AS number
+    FROM ranked r JOIN smallest_vols s 
+    ON r.gift_id = s.gift_id
+    AND r.size_rank = s.smallest_vol_rank
+    GROUP BY r.package_type
+    ORDER BY r.package_type ASC;
+
+----------------------------*******************-------------------------------
+        WITH RECURSIVE letters AS (
+        SELECT 1 AS n, str, LEFT(str,1) AS letter FROM strs
+        UNION ALL
+        SELECT n+1, str, SUBSTRING(str,n+1,1) FROM letters
+        WHERE n < LENGTH(str)
+    ),
+    totals AS (
+        SELECT letter, COUNT(1) total FROM letters GROUP BY letter
+    ),
+    occurrences AS (
+        SELECT letter, COUNT(DISTINCT str) AS occurrence 
+        FROM letters GROUP BY letter
+    ),
+    occ_counts AS (
+        SELECT str, letter, COUNT(1) AS occ_count
+        FROM letters GROUP BY str, letter
+    ),
+    max_occurrences AS (
+        SELECT letter, MAX(occ_count) max_occurrence
+        FROM occ_counts GROUP BY letter
+    ),
+    max_occurence_reaches AS (
+        SELECT o.letter, COUNT(o.str) AS max_occurence_reached
+        FROM occ_counts o JOIN max_occurrences m
+        ON o.letter = m.letter AND o.occ_count = m.max_occurrence
+        GROUP BY o.letter
+    )
+    SELECT t.letter, t.total, o.occurrence, m.max_occurrence,
+    r.max_occurence_reached
+    FROM totals t JOIN occurrences o ON t.letter = o.letter
+    JOIN max_occurrences m ON t.letter = m.letter
+    JOIN max_occurence_reaches r ON t.letter = r.letter
+    ORDER BY t.letter;
+-----------------------********************---------------------------------
+        WITH small_dep AS (
+        SELECT d.id, d.name, COALESCE(COUNT(e.id),0) AS emp_count
+        FROM department d LEFT OUTER JOIN employee e ON d.id = e.department
+        GROUP BY d.id, d.name HAVING COUNT(e.id) <= 5
+    ),
+    salaries AS (
+        SELECT sd.id, sd.name, sd.emp_count, COALESCE(SUM(e.salary),0) salary
+        FROM small_dep sd LEFT OUTER JOIN employee e 
+        ON sd.id = e.department
+        GROUP BY sd.id, sd.name, sd.emp_count
+    ),
+    rownumbered AS (
+        SELECT name AS dep_name, emp_count AS emp_number, id,
+        salary AS total_salary, 
+        ROW_NUMBER() OVER(ORDER BY salary DESC, emp_count DESC, id ASC)
+        AS rownumber
+        FROM salaries)
+    SELECT dep_name, emp_number, total_salary
+    FROM rownumbered 
+    WHERE rownumber MOD 2 <> 0
+    ORDER BY total_salary DESC, emp_number DESC, id ASC;
+
+
+      WITH firstrow AS (
+        SELECT 
+        CONCAT(' Total miles driven by all drivers combined: ', 
+        CAST(SUM(miles_logged) AS CHAR)) AS summary, 0 AS headernumber,
+        'all' AS driver_name 
+        FROM inspections
+    ),
+    driverfirstrows AS (
+        SELECT 
+        CONCAT(' Name: ', driver_name,'; number of inspections: ', 
+        CAST(COUNT(date) AS CHAR), '; miles driven: ', CAST(SUM(miles_logged) AS CHAR) ) AS summary, 1 AS headernumber,
+        driver_name
+        FROM inspections GROUP BY driver_name
+    ),
+    inspectionrows AS (
+        SELECT 
+        CONCAT('  date: ',CAST(date AS CHAR),'; miles covered: ', CAST(miles_logged AS CHAR)) AS summary, 2 AS headernumber, driver_name
+        FROM inspections
+    )
+    SELECT summary, headernumber, driver_name FROM firstrow
+    UNION ALL
+    SELECT summary, headernumber, driver_name FROM driverfirstrows
+    UNION ALL
+    SELECT summary, headernumber, driver_name FROM inspectionrows;
+
+
+        WITH RECURSIVE expanded AS (
+        SELECT 1 AS n, chapter_name, chapter_number, 
+        SUBSTRING(chapter_number,1,1) AS roman_digit
+        FROM book_chapters
+        UNION ALL
+        SELECT n+1, chapter_name, chapter_number, 
+        SUBSTRING(chapter_number,n+1,1) AS roman_digit
+        FROM expanded
+        WHERE n < LENGTH(chapter_number)
+    )
+    SELECT * FROM expanded;
