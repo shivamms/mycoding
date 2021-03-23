@@ -1,6 +1,6 @@
---incremental row processing
---compare current row with next row
---self join
+-- incremental row processing
+-- compare current row with next row
+-- self join
 -- You've been traveling all over the world for the past year, and now it's time for you to come home. You marked each city that you visited on a map in the order that you visited them, and wrote down the cities' coordinates. For the sake of simplicity, the cities are assigned coordinates on a plane map, so they can be written as (x, y).
 
 -- The information about the cities you visited is stored in the table cities, which has the structure:

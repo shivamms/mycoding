@@ -1,2 +1,2 @@
 language = "python3.8"
-run = "python scripts/main.py"
+run = "python Most-Populated-Year/mostPopulatedYear.py"
