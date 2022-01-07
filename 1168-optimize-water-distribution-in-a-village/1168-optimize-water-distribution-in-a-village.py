@@ -23,8 +23,6 @@ class Solution:
                         self.rank[rootx] += 1
                     return True
                 return False
-                print(self.root)
-                print(self.rank)
 
         costs = []
         for i, wellCost in enumerate(wells):
