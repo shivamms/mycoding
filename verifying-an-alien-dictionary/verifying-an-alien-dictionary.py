@@ -1,15 +1,26 @@
 class Solution:
+    from collections import defaultdict
     def isAlienSorted(self, words: List[str], order: str) -> bool:
-        orderHash = {c:i for i, c in enumerate(order)}
-        for i in range(len(words)-1):
+        n = len(words)
+        alpha = defaultdict(int)
+        i = 1
+        for c in order:
+            alpha[c] = i
+            i += 1
+        for i in range(n-1):
+            word1 = words[i]
+            word2 = words[i+1]
+            l, m = len(word1), len(word2)
             j = 0
-            while j < min(len(words[i]),len(words[i+1])):
-                if orderHash[words[i][j]] < orderHash[words[i+1][j]]:
-                    j += 1
+            while j < min(l,m):
+                if alpha[word1[j]] < alpha[word2[j]]:
                     break
-                elif orderHash[words[i][j]] > orderHash[words[i+1][j]]:
+                elif alpha[word1[j]] == alpha[word2[j]]:
+                    j += 1
+                else:
                     return False
-                j += 1
-            if orderHash[words[i][j-1]] == orderHash[words[i+1][j-1]] and len(words[i]) > len(words[i+1]):
+            if l > m and j == m:
                 return False
         return True
+                
+        
