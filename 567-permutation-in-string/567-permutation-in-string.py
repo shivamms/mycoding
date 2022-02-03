@@ -4,8 +4,6 @@ class Solution:
         set1 = Counter(s1)
         l = len(s1)
         for i in range(len(s2)):
-            # print(set(s2[i:i+l]))
-            # print(set1)
             if set1 == Counter(s2[i:i+l]):
                 return True
         return False
