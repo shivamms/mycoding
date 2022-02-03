@@ -14,6 +14,6 @@ class Solution:
                 set2.pop(s2[remove])
             set2[s2[i]] += 1
             remove += 1
-        if set1 == set2:
-            return True
-        return False
+        # if set1 == set2:
+        #     return True
+        return set1 == set2
