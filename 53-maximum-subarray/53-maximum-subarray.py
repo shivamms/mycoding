@@ -5,12 +5,11 @@ class Solution:
         for i in range (1, len(nums)):
             if nums[i] <= curSum + nums[i]:
                 curSum += nums[i]
-                if maxSum < curSum:
-                    maxSum = curSum
             else:
-                if nums[i] > maxSum:
-                    maxSum = nums[i]
                 curSum = nums[i]
+            if maxSum < curSum:
+                maxSum = curSum
+
         return maxSum
                 
             
