@@ -11,7 +11,6 @@ class Solution:
                 if nums[i] > maxSum:
                     maxSum = nums[i]
                 curSum = nums[i]
-                print(maxSum, curSum)
         return maxSum
                 
             
