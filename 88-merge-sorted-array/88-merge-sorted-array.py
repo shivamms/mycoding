@@ -20,7 +20,6 @@ class Solution:
                 temp += nums1[i:]
             elif j < n:
                 temp += nums2[j:]
-            print(temp)
             for i in range(m+n):
                 nums1[i] = temp[i]
                 
