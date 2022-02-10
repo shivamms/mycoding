@@ -7,9 +7,6 @@ class Solution:
                 return pivot
             elif target < nums[pivot]:
                 right = pivot -1
-                if left > right:
-                    return pivot
             else:
-                if left == right:
-                    return pivot + 1
                 left = pivot + 1
+        return left
