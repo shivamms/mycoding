@@ -6,7 +6,6 @@ class Solution:
         left, right = 1, n
         while left <= right:
             pivot = left + (right - left) // 2
-            print(left, right, pivot, isBadVersion(pivot))
             if isBadVersion(pivot):
                 right = pivot - 1
             else:
