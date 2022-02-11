@@ -1,8 +1,15 @@
 class Solution:
     fibval = {0:0, 1:1}
     def fib(self, n: int) -> int:
-        if n in self.fibval:
-            return self.fibval[n]
-        self.fibval[n] = self.fib(n-1) + self.fib(n-2)
-        return self.fibval[n]
+        # recursion
+        # if n in self.fibval:
+        #     return self.fibval[n]
+        # self.fibval[n] = self.fib(n-1) + self.fib(n-2)
+        # return self.fibval[n]
         
+        # loop
+        if n <= 1:
+            return n
+        for i in range(2,n+1):
+            self.fibval[i] = self.fibval[i-1]+self.fibval[i-2]
+        return self.fibval[n]
