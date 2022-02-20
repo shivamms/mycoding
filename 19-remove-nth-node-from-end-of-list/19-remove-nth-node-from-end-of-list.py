@@ -16,9 +16,6 @@ class Solution:
         if n == 1:
             arr[size-2].next = None
             return head
-        # if size-(n-1) == size:
-        #     arr[0].next = None
-        #     return arr[0]
         arr[size-(n+1)].next = arr[size-(n-1)]
         return head
         
