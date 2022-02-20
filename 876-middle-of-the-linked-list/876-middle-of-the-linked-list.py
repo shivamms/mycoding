@@ -8,13 +8,12 @@ class Solution:
         n = m = 0
         node = head
         while node:
-            n += 1
-            node = node.next
-        m, n = (n // 2) + 1, 0
-        node = head
-        while node:
-            n += 1
-            if n == m:
+            if m == n and m > 0:
                 return node
+            n += 1
             node = node.next
+            if node is None:
+                m, n = (n // 2) + 1, 1
+                node = head
+
         
