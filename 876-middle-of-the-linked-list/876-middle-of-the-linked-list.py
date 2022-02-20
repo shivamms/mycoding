@@ -15,11 +15,16 @@ class Solution:
         #     if node is None:
         #         m, n = (n // 2) + 1, 1
         #         node = head
-        arr = []
-        node = head
-        while node:
-            arr.append(node)
-            node = node.next
-        return arr[(len(arr)//2)]
-
+        # arr = []
+        # node = head
+        # while node:
+        #     arr.append(node)
+        #     node = node.next
+        # return arr[(len(arr)//2)]
+        slow = fast = head
+        while fast and fast.next:
+            slow = slow.next
+            fast = fast.next.next
+        return slow
+            
         
