@@ -10,17 +10,32 @@ class Node:
 
 class Solution:
     def connect(self, root: 'Optional[Node]') -> 'Optional[Node]':
-        if root is None:
-            return None
-        dq = deque([(root, None)])
-        while dq:
-            nodes = dq.popleft()
-            nodes[0].next = nodes[1]
-            if nodes[1]:
-                nodes[1].next = None
-            if nodes[0].left:
-                dq.append((nodes[0].left,nodes[0].right))
-            if nodes[1] and nodes[1].left:
-                dq.append((nodes[0].right,nodes[1].left))
-                dq.append((nodes[1].left,nodes[1].right))
+        # using deque
+        # if root is None:
+        #     return None
+        # dq = deque([(root, None)])
+        # while dq:
+        #     nodes = dq.popleft()
+        #     nodes[0].next = nodes[1]
+        #     if nodes[1]:
+        #         nodes[1].next = None
+        #     if nodes[0].left:
+        #         dq.append((nodes[0].left,nodes[0].right))
+        #     if nodes[1] and nodes[1].left:
+        #         dq.append((nodes[0].right,nodes[1].left))
+        #         dq.append((nodes[1].left,nodes[1].right))
+        # return root
+        
+        #without using extra space
+        leftMost = root
+        while leftMost:
+            levelHead = leftMost
+            while levelHead:
+                if levelHead.left and levelHead.right:
+                    levelHead.left.next = levelHead.right
+                if levelHead.next and levelHead.next.right and levelHead.next.left:
+                    levelHead.right.next = levelHead.next.left
+                levelHead = levelHead.next
+            leftMost = leftMost.left
         return root
+                    
