@@ -3,8 +3,8 @@ class Solution:
         """
         Do not return anything, modify nums1 in-place instead.
         """
-        if m == 0 and n > 0:
-            for i in range(len(nums2)): nums1[i] = nums2[i] 
+        # if m == 0 and n > 0:
+        #     for i in range(len(nums2)): nums1[i] = nums2[i] 
 
         j, k = m-1, n-1
         for i in range(m+n-1, -1 ,-1):
