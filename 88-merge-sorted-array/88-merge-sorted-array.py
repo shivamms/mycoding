@@ -3,24 +3,18 @@ class Solution:
         """
         Do not return anything, modify nums1 in-place instead.
         """
-        if n > 0 and m == 0:
-            for i in range(n):
-                nums1[i] = nums2[i]
-        elif n > 0 and m > 0:
-            temp = []*(m+n)
-            i = j = 0
-            while i < m and j < n:
-                if nums1[i] < nums2[j]:
-                    temp.append(nums1[i])
-                    i += 1
-                else:
-                    temp.append(nums2[j])
-                    j += 1
-            if i < m:
-                temp += nums1[i:]
-            elif j < n:
-                temp += nums2[j:]
-            for i in range(m+n):
-                nums1[i] = temp[i]
+        if m == 0 and n > 0:
+            for i in range(len(nums2)): nums1[i] = nums2[i] 
+
+        j, k = m-1, n-1
+        for i in range(m+n-1, -1 ,-1):
+            if k < 0:
+                break
+            if j >= 0 and nums1[j] > nums2[k]:
+                nums1[i] = nums1[j]
+                j -= 1
+            else:
+                nums1[i] = nums2[k]
+                k -= 1
                 
-        
+                
