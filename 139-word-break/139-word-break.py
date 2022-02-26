@@ -6,10 +6,9 @@ class Solution:
     #         if start == len(s):
     #             return True
     #         end = start+1
-    #         while end <= len(s)-1:
-    #             if s[start:end+1] in wordDict and checkWord(end+1):
+    #         for end in range(start+1, len(s)+1):
+    #             if s[start:end] in wordDict and checkWord(end):
     #                 return True
-    #             end += 1
     #         return False
     #     return checkWord(0)
     
