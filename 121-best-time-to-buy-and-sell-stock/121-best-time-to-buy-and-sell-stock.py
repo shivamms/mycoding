@@ -1,9 +1,10 @@
 class Solution:
     def maxProfit(self, prices: List[int]) -> int:
-        lowBuy = math.inf
+        buy = prices[0]
         profit = 0
-        for p in prices:
-            profit = max(profit, p-lowBuy)
-            lowBuy = min(lowBuy, p)
+        for price in prices:
+            buy = min(buy, price)
+            profit = max(profit, price - buy)
         return profit
-                
+            
+            
