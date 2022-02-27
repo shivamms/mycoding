@@ -21,8 +21,7 @@ class Solution:
                         islands.append(cells)
                         cells = set()
             return islands
-        
-        # islands1 = collectIslands(grid1)
+
         islands2 = collectIslands(grid2)
         subIslands = 0
         for land in islands2:
