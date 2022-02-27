@@ -1,10 +1,13 @@
 class Solution:
     def reverseWords(self, s: str) -> str:
-        words = s.split(' ')
-        i, n = 0, len(words)
-        while i < n:
-            words[i] = ''.join(list(words[i])[::-1])
-            i += 1
-        return ' '.join(words)
-            
-            
+        ## without using built-in list slicing
+        def reverse(word):
+            i, j = 0, len(word)-1
+            while i < j:
+                word[i], word[j] = word[j], word[i]
+                i += 1
+                j -= 1
+            return ''.join(word)
+        
+        words = s.split()
+        return ' '.join([reverse(list(word)) for word in words])
