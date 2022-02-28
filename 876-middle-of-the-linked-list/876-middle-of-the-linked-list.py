@@ -5,26 +5,13 @@
 #         self.next = next
 class Solution:
     def middleNode(self, head: Optional[ListNode]) -> Optional[ListNode]:
-        # n = m = 0
-        # node = head
-        # while node:
-        #     if m == n and m > 0:
-        #         return node
-        #     n += 1
-        #     node = node.next
-        #     if node is None:
-        #         m, n = (n // 2) + 1, 1
-        #         node = head
-        # arr = []
-        # node = head
-        # while node:
-        #     arr.append(node)
-        #     node = node.next
-        # return arr[(len(arr)//2)]
-        slow = fast = head
-        while fast and fast.next:
-            slow = slow.next
-            fast = fast.next.next
-        return slow
-            
+        ## using extra space
+        arr = []
+        node = head
+        while node:
+            arr.append(node)
+            node = node.next
+        return arr[(len(arr)//2)]
+    
+        ## two pass without extra space
         
