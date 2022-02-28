@@ -8,9 +8,9 @@ class Solution:
             return digitSum
         
         num = n
-        i = 0
-        while i < 10:
+        seen = set()
+        while 1==1:
             num = digitSqrSum(num)
             if num == 1: return True
-            if num == n: return False
-            i += 1
+            if num in seen: return False
+            seen.add(num)
