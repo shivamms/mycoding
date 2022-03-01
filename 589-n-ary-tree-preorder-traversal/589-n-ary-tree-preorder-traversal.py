@@ -7,16 +7,28 @@ class Node:
 """
 
 class Solution:
-    def preorder(self, root: 'Node') -> List[int]:   
-        output = []
-        def dfs(node):
-            if node is None: return
-            output.append(node.val)
-            for node in node.children:
-                dfs(node)
+    def preorder(self, root: 'Node') -> List[int]:  
+## DFS - Recursion
+#         output = []
+#         def dfs(node):
+#             if node is None: return
+#             output.append(node.val)
+#             for node in node.children:
+#                 dfs(node)
         
+#         node = root
+#         dfs(node)
+#         return output
+
+## Iteration
+        if root is None:
+            return []
         node = root
-        dfs(node)
+        stack, output = [root, ], []
+        while stack:
+            root = stack.pop()
+            output.append(root.val)
+            stack.extend(root.children[::-1])
         return output
                 
         
