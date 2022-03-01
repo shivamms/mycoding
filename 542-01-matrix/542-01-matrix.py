@@ -1,5 +1,21 @@
 class Solution:
     def updateMatrix(self, mat: List[List[int]]) -> List[List[int]]:
+        ## BFS
+#         m, n = len(mat), len(mat[0])
+        
+#         queue = deque()
+#         queue.append((0,0))
+#         visited = set()
+#         while queue:
+#             (row, col) = queue.popleft()
+#             visited.add((row, col))
+#             for (r, c) in ((row+1, col), (row-1,col), (row, col+1), (row, col-1)):
+#                 if 0 <= r < m and 0 <= c < n and (r, c) not in visited:
+#                     if mat[r][c] != 0:
+#                         mat[r][c] = mat[row][col] + 1
+#                     queue.append((r,c))
+#         return mat
+        ## DP
         m, n = len(mat), len(mat[0])
         result = [[math.inf for j in range(n)] for i in range(m)]
         for r in range(m):
