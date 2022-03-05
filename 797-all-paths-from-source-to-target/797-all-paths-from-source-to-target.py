@@ -7,8 +7,7 @@ class Solution:
                 pathList.append(path)
             for n in graph[node]:
                 currPath = [p for p in path]
-                findPaths(n,currPath)
-            
+                findPaths(n,currPath) 
         pathList = []
         findPaths(0,[])
         return pathList
