@@ -4,7 +4,7 @@ class Solution:
             def __init__(self, size):
                 self.root = [i for i in range(size)]
                 self.size = size
-                self.cables = 0
+                self.cables = n
                 
             def find(self, x):
                 if self.root[x] == x:
@@ -17,22 +17,25 @@ class Solution:
                 rooty = self.find(y)
                 if rootx != rooty:
                     self.root[rooty] = rootx
-                else:
-                    self.cables += 1
+                    self.cables -= 1
+                # else:
+                #     self.cables += 1
             
         uf = UnionFind(n)
         for conn in connections:
             uf.union(conn[0],conn[1])
-        roots = set()
-        for i in range(n):
-            roots.add(uf.find(i))
-        # if len(roots) == 1:
-        #     return 0
-        if len(roots)-1 == uf.cables:
-            return uf.cables
-        elif len(roots)-1 > uf.cables:
-            return -1
-        elif len(roots)-1 < uf.cables:
-            return len(roots)-1
+        if len(connections) >= n-1:
+            return uf.cables-1 
+        return -1
+    
+        # roots = set()
+        # for i in range(n):
+        #     roots.add(uf.find(i))
+        # if len(roots)-1 == uf.cables:
+        #     return uf.cables
+        # elif len(roots)-1 > uf.cables:
+        #     return -1
+        # elif len(roots)-1 < uf.cables:
+        #     return len(roots)-1
         
         
