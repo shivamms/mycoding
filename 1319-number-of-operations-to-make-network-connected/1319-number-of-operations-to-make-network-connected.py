@@ -26,9 +26,9 @@ class Solution:
         roots = set()
         for i in range(n):
             roots.add(uf.find(i))
-        if len(roots) == 1:
-            return 0
-        elif len(roots)-1 == uf.cables:
+        # if len(roots) == 1:
+        #     return 0
+        if len(roots)-1 == uf.cables:
             return uf.cables
         elif len(roots)-1 > uf.cables:
             return -1
