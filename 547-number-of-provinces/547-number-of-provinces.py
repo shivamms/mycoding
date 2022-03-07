@@ -32,19 +32,34 @@ class Solution:
 #         return len(provinces)
     
         ## DFS
-        n = len(isConnected)
-        visited = set()
-        def dfs(r):
-            for c in range(n):
-                if c not in visited and isConnected[r][c] == 1:
-                    visited.add(c)
-                    dfs(c)
+#         n = len(isConnected)
+#         visited = set()
+#         def dfs(r):
+#             for c in range(n):
+#                 if c not in visited and isConnected[r][c] == 1:
+#                     visited.add(c)
+#                     dfs(c)
 
-        count = 0;
+#         count = 0;
+#         for r in range(n):
+#             if r not in visited:
+#                 dfs(r)
+#                 count += 1
+#         return count
+        ## BFS
+ 
+        visited,count, queue, n = set(), 0, deque(), len(isConnected)
         for r in range(n):
             if r not in visited:
-                dfs(r)
+                queue.append(r)
+                while queue:
+                    row = queue.pop()
+                    visited.add(row)
+                    for col in range(n):
+                        if isConnected[row][col] == 1 and col not in visited:
+                            queue.append(col)
                 count += 1
-        return count
+        return count;
+
                     
             
