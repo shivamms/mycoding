@@ -5,12 +5,13 @@
 #         self.next = next
 class Solution:
     def getDecimalValue(self, head: ListNode) -> int:
-        node, binary, decimalVal = head, [], 0
+        node, binary, decimalVal = head, '', 0
         while node:
-            binary.append(node.val)
+            binary += str(node.val)
             node = node.next
-        n = len(binary)-1
-        for i in range(len(binary)):
-            decimalVal += (2**n) * binary[i]
-            n -= 1
-        return decimalVal
+        return int(binary,2)
+        # n = len(binary)-1
+        # for i in range(len(binary)):
+        #     decimalVal += (2**n) * binary[i]
+        #     n -= 1
+        # return decimalVal
