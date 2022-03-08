@@ -15,15 +15,5 @@ class Solution:
                 node.next = list1
                 list1 = list1.next
             node = node.next
-        
-        while list1:
-            node.next = list1
-            list1 = list1.next
-            node = node.next
-            
-        while list2:
-            node.next = list2
-            list2 = list2.next
-            node = node.next
-        
+        node.next = list1 if list1 else list2 
         return dummy.next
