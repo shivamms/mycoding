@@ -7,6 +7,6 @@ class Solution:
         heapify(stones)
         while len(stones) > 1:
             y,x = heappop(stones), heappop(stones)
-            if abs(y)-abs(x) > 0:
-                heappush(stones,-(abs(y)-abs(x)))
-        return -stones[0] if len(stones) == 1 else 0
+            if y != x:
+                heappush(stones, y-x)
+        return -stones[0] if stones else 0
