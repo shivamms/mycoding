@@ -6,7 +6,6 @@ class Solution:
         for i in range(rows):
             for j in range(cols):
                 if matrix[i][j] == '1':
-                    print(i,j)
                     dp[i][j] = min(dp[i-1][j-1],dp[i][j-1], dp[i-1][j]) + 1
                     maxside = max(maxside, dp[i][j])
         return maxside ** 2
