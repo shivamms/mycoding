@@ -5,7 +5,7 @@ class Solution:
     #     for c in s[::-1]:
     #         if c == '#':
     #             bs_count += 1
-    #         elif bs_count > 0:
+    #         elif bs_count:
     #             bs_count -= 1
     #         else:
     #             x += c
@@ -19,14 +19,14 @@ class Solution:
     #             y += c
     #     return x == y
     def backspaceCompare(self, S, T):
-        def F(S):
+        def F(s):
             skip = 0
-            for x in reversed(S):
-                if x == '#':
+            for c in reversed(s):
+                if c == '#':
                     skip += 1
                 elif skip:
                     skip -= 1
                 else:
-                    yield x
+                    yield c
 
         return all(x == y for x, y in itertools.zip_longest(F(S), F(T)))
