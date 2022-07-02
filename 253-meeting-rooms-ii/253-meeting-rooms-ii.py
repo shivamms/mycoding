@@ -8,8 +8,6 @@ class Solution:
                 heapq.heappush(end_time, m[1])
             else:
                 heapq.heapreplace(end_time, m[1])
-            print(end_time)
-        print(intervals)
         
         return(len(end_time))
             
