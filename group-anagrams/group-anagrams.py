@@ -14,5 +14,5 @@ class Solution:
             for c in s:
                 count[ord(c)-ord('a')] += 1
             hashmap[tuple(count)].append(s)
-        return [val for key,val in hashmap.items()]
+        return hashmap.values()
         
